@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private float yRotation;
     private bool shouldJump;
     private bool isFacingRight = true;
+    private float horizontal;
 
     private void Awake()
     {
@@ -25,12 +26,22 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        switch (joystickInput.Horizontal)
+        horizontal = Input.GetAxis("Horizontal");
+        switch (horizontal)
         {
             case > 0 when !isFacingRight:
             case < 0 when isFacingRight:
                 Flip();
                 break;
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            shouldJump = true;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            Shoot();
         }
     }
 
@@ -42,7 +53,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(joystickInput.Horizontal * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
         bool isGrounded = Physics2D.IsTouchingLayers(groundCheck, whatIsGround);
         if (isGrounded && shouldJump)
         {
